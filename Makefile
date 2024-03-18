@@ -57,7 +57,7 @@ endif
 
 ifeq ($(filter ubuntu debian linuxmint,$(OS_ID)),$(OS_ID))
 PKG=deb
-else ifeq ($(filter rhel centos fedora opensuse-leap rocky almalinux,$(OS_ID)),$(OS_ID))
+else ifeq ($(filter rhel centos fedora opensuse-leap opensuse-tumbleweed rocky almalinux,$(OS_ID)),$(OS_ID))
 PKG=rpm
 endif
 
@@ -200,7 +200,7 @@ RPM_SUSE_PYTHON_DEPS = python3-devel python3-pip python3-rpm-macros
 
 RPM_SUSE_PLATFORM_DEPS = shadow rpm-build
 
-ifeq ($(OS_ID),opensuse-leap)
+ifeq ($(filter opensuse-leap opensuse-tumbleweed,$(OS_ID)),$(OS_ID))
 	RPM_SUSE_DEVEL_DEPS += xmlto openssl-devel asciidoc git nasm
 	RPM_SUSE_PYTHON_DEPS += python3 python3-ply python3-virtualenv
 	RPM_SUSE_PLATFORM_DEPS += distribution-release
@@ -371,8 +371,11 @@ endif
 else ifeq ($(filter opensuse-leap-15.3 opensuse-leap-15.4 ,$(OS_ID)-$(OS_VERSION_ID)),$(OS_ID)-$(OS_VERSION_ID))
 	@sudo -E zypper refresh
 	@sudo -E zypper install  -y $(RPM_SUSE_DEPENDS)
+else ifeq ($(OS_ID),opensuse-tumbleweed)
+	@sudo -E zypper refresh
+	@sudo -E zypper install  -y $(RPM_SUSE_DEPENDS)
 else
-	$(error "This option currently works only on Ubuntu, Debian, RHEL, CentOS or openSUSE-leap systems")
+	$(error "This option currently works only on Ubuntu, Debian, RHEL, CentOS, openSUSE-leap and openSUSE-tumbleweed systems")
 endif
 	git config commit.template .git_commit_template.txt
 
